@@ -23,6 +23,15 @@ var errorHandler = require('errorhandler');
 var multipart = require('connect-multiparty')
 var multipartMiddleware = multipart();
 
+///////////
+// Pour le login
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+// needed for SSO
+var passport = require('passport');
+var OpenIDConnectStrategy = require('passport-idaas-openidconnect').IDaaSOIDCStrategy;
+///////////
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
