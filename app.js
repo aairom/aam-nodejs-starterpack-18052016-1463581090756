@@ -80,6 +80,7 @@ var Strategy = new OpenIDConnectStrategy({
         callbackURL : callback_url,
         skipUserProfile: true,
         issuer: issuer_id},
+ /*
  function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
         profile.accessToken = accessToken;
@@ -114,7 +115,8 @@ app.get('/hello', ensureAuthenticated, function(req, res) {
 
 app.get('/failure', function(req, res) {
     res.send('login failed'); });
-
+    */
+// fin partie SSO
 ///////////////////
 
 
