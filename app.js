@@ -44,6 +44,80 @@ app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/style', express.static(path.join(__dirname, '/views/style')));
 
+
+///////////////////
+// SSO
+// define express session services, etc for SSO
+app.use(cookieParser());
+app.use(session({resave: 'true', saveUninitialized: 'true' , secret: 'keyboard cat'}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(function(user, done) {
+done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+done(null, obj);
+});
+// VCAP_SERVICES contains all the credentials of services bound to
+// this application. For details of its content, please refer to
+// the document or sample of each service.
+var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+var ssoConfig = services.SingleSignOn[0];
+var client_id = ssoConfig.credentials.clientId;
+var client_secret = ssoConfig.credentials.secret;
+var authorization_url = ssoConfig.credentials.authorizationEndpointUrl;
+var token_url = ssoConfig.credentials.tokenEndpointUrl;
+var issuer_id = ssoConfig.credentials.issuerIdentifier;
+var callback_url = 'https://nodejs-sso-01.mybluemix.net/auth/sso/callback';
+var OpenIDConnectStrategy = require('passport-idaas-openidconnect').IDaaSOIDCStrategy;
+var Strategy = new OpenIDConnectStrategy({
+        authorizationURL : authorization_url,
+        tokenURL : token_url,
+        clientID : client_id,
+        scope: 'openid',
+        response_type: 'code',
+        clientSecret : client_secret,
+        callbackURL : callback_url,
+        skipUserProfile: true,
+        issuer: issuer_id},
+ function(accessToken, refreshToken, profile, done) {
+        process.nextTick(function() {
+        profile.accessToken = accessToken;
+        profile.refreshToken = refreshToken;
+        done(null, profile);
+    })
+});
+passport.use(Strategy);
+app.get('/login', passport.authenticate('openidconnect', {}));
+
+function ensureAuthenticated(req, res, next) {
+    if(!req.isAuthenticated()) {
+        req.session.originalUrl = req.originalUrl;
+        res.redirect('/login');
+        } else {
+        return next();
+    }
+}
+
+
+app.get('/auth/sso/callback',function(req,res,next) {
+    var redirect_url = req.session.originalUrl;
+    passport.authenticate('openidconnect',{
+    successRedirect: redirect_url,
+    failureRedirect: '/failure',
+    })(req,res,next);
+});
+
+
+app.get('/hello', ensureAuthenticated, function(req, res) {
+    res.send('Hello, '+ req.user['id'] + '!'); });
+
+app.get('/failure', function(req, res) {
+    res.send('login failed'); });
+
+///////////////////
+
+
 // development only
 if ('development' == app.get('env')) {
 	app.use(errorHandler());
