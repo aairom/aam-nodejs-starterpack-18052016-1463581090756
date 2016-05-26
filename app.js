@@ -62,7 +62,7 @@ done(null, obj);
 // this application. For details of its content, please refer to
 // the document or sample of each service.
  
-var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+// var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
 var ssoConfig = services.SingleSignOn[0];
 var client_id = ssoConfig.credentials.clientId;
 var client_secret = ssoConfig.credentials.secret;
@@ -71,7 +71,6 @@ var token_url = ssoConfig.credentials.tokenEndpointUrl;
 var issuer_id = ssoConfig.credentials.issuerIdentifier;
 var callback_url = 'https://nodejs-sso-01.mybluemix.net/auth/sso/callback';
 var OpenIDConnectStrategy = require('passport-idaas-openidconnect').IDaaSOIDCStrategy;
-/*
 var Strategy = new OpenIDConnectStrategy({
         authorizationURL : authorization_url,
         tokenURL : token_url,
@@ -102,7 +101,7 @@ function ensureAuthenticated(req, res, next) {
     }
 }
 
-
+/*
 app.get('/auth/sso/callback',function(req,res,next) {
     var redirect_url = req.session.originalUrl;
     passport.authenticate('openidconnect',{
