@@ -62,7 +62,7 @@ done(null, obj);
 // this application. For details of its content, please refer to
 // the document or sample of each service.
  
-// var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
 var ssoConfig = services.SingleSignOn[0];
 var client_id = ssoConfig.credentials.clientId;
 var client_secret = ssoConfig.credentials.secret;
