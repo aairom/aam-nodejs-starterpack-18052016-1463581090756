@@ -91,7 +91,7 @@ var Strategy = new OpenIDConnectStrategy({
 });
 passport.use(Strategy);
 app.get('/login', passport.authenticate('openidconnect', {}));
-/*
+
 function ensureAuthenticated(req, res, next) {
     if(!req.isAuthenticated()) {
         req.session.originalUrl = req.originalUrl;
@@ -100,7 +100,7 @@ function ensureAuthenticated(req, res, next) {
         return next();
     }
 }
-
+/*
 
 app.get('/auth/sso/callback',function(req,res,next) {
     var redirect_url = req.session.originalUrl;
