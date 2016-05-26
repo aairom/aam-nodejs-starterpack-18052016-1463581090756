@@ -71,6 +71,7 @@ var token_url = ssoConfig.credentials.tokenEndpointUrl;
 var issuer_id = ssoConfig.credentials.issuerIdentifier;
 var callback_url = 'https://nodejs-sso-01.mybluemix.net/auth/sso/callback';
 var OpenIDConnectStrategy = require('passport-idaas-openidconnect').IDaaSOIDCStrategy;
+/*
 var Strategy = new OpenIDConnectStrategy({
         authorizationURL : authorization_url,
         tokenURL : token_url,
@@ -81,7 +82,7 @@ var Strategy = new OpenIDConnectStrategy({
         callbackURL : callback_url,
         skipUserProfile: true,
         issuer: issuer_id},
-/*
+
  function(accessToken, refreshToken, profile, done) {
         process.nextTick(function() {
         profile.accessToken = accessToken;
